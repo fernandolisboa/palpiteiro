@@ -1,0 +1,22 @@
+{
+  "name": "palpiteiro",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@11.11.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @palpiteiro/web",
+    "build": "npm run build --workspace @palpiteiro/web",
+    "lint": "npm run lint --workspace @palpiteiro/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}
+

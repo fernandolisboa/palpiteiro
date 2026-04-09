@@ -1,0 +1,425 @@
+import type {
+  Competition,
+  CompetitionSlug,
+  FixtureDetails,
+  FixtureSummary,
+  HistoryEntry,
+  ProviderScore,
+  TeamProfile,
+  UserPreferences,
+  UserQuota,
+} from "@palpiteiro/domain";
+
+const competitions: Record<CompetitionSlug, Competition> = {
+  brasileirao: {
+    slug: "brasileirao",
+    name: "Brasileirao Serie A",
+    seasonLabel: "2026",
+    country: "Brasil",
+  },
+  "copa-do-brasil": {
+    slug: "copa-do-brasil",
+    name: "Copa do Brasil",
+    seasonLabel: "2026",
+    country: "Brasil",
+  },
+  libertadores: {
+    slug: "libertadores",
+    name: "CONMEBOL Libertadores",
+    seasonLabel: "2026",
+    country: "America do Sul",
+  },
+};
+
+const teams: Record<string, TeamProfile> = {
+  flamengo: {
+    id: "flamengo",
+    name: "Flamengo",
+    shortName: "FLA",
+    city: "Rio de Janeiro",
+    rating: 88,
+    attackIndex: 90,
+    defenseIndex: 81,
+    formIndex: 84,
+    goalsForPerMatch: 1.9,
+    goalsAgainstPerMatch: 0.92,
+    cornersForPerMatch: 6.4,
+    cornersAgainstPerMatch: 4.2,
+    cardsForPerMatch: 2.1,
+    cardsAgainstPerMatch: 2.4,
+    cleanSheetRate: 0.44,
+    bttsRate: 0.52,
+    injuriesImpact: 0.08,
+  },
+  palmeiras: {
+    id: "palmeiras",
+    name: "Palmeiras",
+    shortName: "PAL",
+    city: "Sao Paulo",
+    rating: 87,
+    attackIndex: 86,
+    defenseIndex: 85,
+    formIndex: 82,
+    goalsForPerMatch: 1.7,
+    goalsAgainstPerMatch: 0.81,
+    cornersForPerMatch: 5.9,
+    cornersAgainstPerMatch: 4.0,
+    cardsForPerMatch: 2.4,
+    cardsAgainstPerMatch: 2.3,
+    cleanSheetRate: 0.47,
+    bttsRate: 0.48,
+    injuriesImpact: 0.05,
+  },
+  botafogo: {
+    id: "botafogo",
+    name: "Botafogo",
+    shortName: "BOT",
+    city: "Rio de Janeiro",
+    rating: 82,
+    attackIndex: 80,
+    defenseIndex: 79,
+    formIndex: 76,
+    goalsForPerMatch: 1.5,
+    goalsAgainstPerMatch: 1.1,
+    cornersForPerMatch: 6.8,
+    cornersAgainstPerMatch: 4.8,
+    cardsForPerMatch: 2.7,
+    cardsAgainstPerMatch: 2.8,
+    cleanSheetRate: 0.31,
+    bttsRate: 0.56,
+    injuriesImpact: 0.06,
+  },
+  internacional: {
+    id: "internacional",
+    name: "Internacional",
+    shortName: "INT",
+    city: "Porto Alegre",
+    rating: 79,
+    attackIndex: 77,
+    defenseIndex: 75,
+    formIndex: 71,
+    goalsForPerMatch: 1.3,
+    goalsAgainstPerMatch: 1.16,
+    cornersForPerMatch: 5.4,
+    cornersAgainstPerMatch: 4.9,
+    cardsForPerMatch: 2.8,
+    cardsAgainstPerMatch: 2.5,
+    cleanSheetRate: 0.28,
+    bttsRate: 0.58,
+    injuriesImpact: 0.09,
+  },
+  atletico: {
+    id: "atletico",
+    name: "Atletico-MG",
+    shortName: "CAM",
+    city: "Belo Horizonte",
+    rating: 81,
+    attackIndex: 82,
+    defenseIndex: 73,
+    formIndex: 74,
+    goalsForPerMatch: 1.62,
+    goalsAgainstPerMatch: 1.19,
+    cornersForPerMatch: 5.7,
+    cornersAgainstPerMatch: 5.1,
+    cardsForPerMatch: 2.5,
+    cardsAgainstPerMatch: 2.7,
+    cleanSheetRate: 0.26,
+    bttsRate: 0.61,
+    injuriesImpact: 0.07,
+  },
+  bahia: {
+    id: "bahia",
+    name: "Bahia",
+    shortName: "BAH",
+    city: "Salvador",
+    rating: 76,
+    attackIndex: 75,
+    defenseIndex: 71,
+    formIndex: 73,
+    goalsForPerMatch: 1.34,
+    goalsAgainstPerMatch: 1.22,
+    cornersForPerMatch: 5.0,
+    cornersAgainstPerMatch: 5.2,
+    cardsForPerMatch: 2.9,
+    cardsAgainstPerMatch: 2.6,
+    cleanSheetRate: 0.24,
+    bttsRate: 0.54,
+    injuriesImpact: 0.04,
+  },
+};
+
+const flamengo = teams.flamengo!;
+const palmeiras = teams.palmeiras!;
+const botafogo = teams.botafogo!;
+const internacional = teams.internacional!;
+const atletico = teams.atletico!;
+const bahia = teams.bahia!;
+
+export const mockFixtures: FixtureDetails[] = [
+  {
+    id: "fix-fla-pal",
+    competition: competitions.brasileirao,
+    kickoffAt: "2026-04-12T21:30:00-03:00",
+    roundLabel: "Rodada 4",
+    venue: "Maracana",
+    headline: "Choque de elite com tendencia de jogo travado",
+    headlineDeck:
+      "O motor ve margem curta para o Flamengo, mas com equilibrio suficiente para precificar empate e under com respeito.",
+    stakes:
+      "Confronto entre elencos de topo, com impacto direto no pelotao da frente.",
+    signalTag: "Mercado equilibrado",
+    status: "scheduled",
+    homeTeam: { id: flamengo.id, name: flamengo.name, shortName: flamengo.shortName },
+    awayTeam: { id: palmeiras.id, name: palmeiras.name, shortName: palmeiras.shortName },
+    homeProfile: flamengo,
+    awayProfile: palmeiras,
+    homeForm: [
+      { label: "vs Fluminense", result: "W", scoreline: "2-0" },
+      { label: "vs Vasco", result: "W", scoreline: "3-1" },
+      { label: "vs Gremio", result: "D", scoreline: "1-1" },
+      { label: "vs Bahia", result: "W", scoreline: "2-1" },
+      { label: "vs Sao Paulo", result: "L", scoreline: "0-1" },
+    ],
+    awayForm: [
+      { label: "vs Santos", result: "W", scoreline: "2-0" },
+      { label: "vs Corinthians", result: "W", scoreline: "1-0" },
+      { label: "vs Botafogo", result: "D", scoreline: "1-1" },
+      { label: "vs Fortaleza", result: "W", scoreline: "3-1" },
+      { label: "vs Inter", result: "L", scoreline: "0-1" },
+    ],
+    headToHead: [
+      { date: "2025-11-02", competition: "Brasileirao", scoreline: "1-1", winner: "Empate" },
+      { date: "2025-07-18", competition: "Brasileirao", scoreline: "2-1", winner: "Flamengo" },
+      { date: "2025-04-28", competition: "Supercopa", scoreline: "0-1", winner: "Palmeiras" },
+    ],
+    statSnapshot: [
+      { label: "xG medio", homeValue: 1.82, awayValue: 1.61, emphasis: "neutral" },
+      { label: "Escanteios", homeValue: 6.4, awayValue: 5.9, emphasis: "neutral" },
+      { label: "Cartoes", homeValue: 2.1, awayValue: 2.4, emphasis: "lower-better" },
+      { label: "Clean sheets", homeValue: 0.44, awayValue: 0.47, emphasis: "neutral" },
+    ],
+    injuryNotes: [
+      { teamSide: "home", player: "Lateral titular", status: "duvida", impact: "medium" },
+      { teamSide: "away", player: "Meia de criacao", status: "desfalque", impact: "high" },
+    ],
+    newsSignals: [
+      "Flamengo chega com descanso completo apos rodar o elenco no meio da semana.",
+      "Palmeiras perde criatividade sem o meia mais vertical entre linhas.",
+      "Historico recente aponta menos espaco entre as linhas e ritmo controlado.",
+    ],
+  },
+  {
+    id: "fix-bot-int",
+    competition: competitions.brasileirao,
+    kickoffAt: "2026-04-13T19:00:00-03:00",
+    roundLabel: "Rodada 4",
+    venue: "Nilton Santos",
+    headline: "Botafogo empurra corners, Inter responde em transicao",
+    headlineDeck:
+      "A assimetria entre corners e transicoes deixa o jogo atraente para mercados compostos.",
+    stakes: "Jogo de tabela com perfil mais aberto que a media da rodada.",
+    signalTag: "Alta em escanteios",
+    status: "scheduled",
+    homeTeam: { id: botafogo.id, name: botafogo.name, shortName: botafogo.shortName },
+    awayTeam: { id: internacional.id, name: internacional.name, shortName: internacional.shortName },
+    homeProfile: botafogo,
+    awayProfile: internacional,
+    homeForm: [
+      { label: "vs Cruzeiro", result: "W", scoreline: "2-1" },
+      { label: "vs Juventude", result: "W", scoreline: "1-0" },
+      { label: "vs Palmeiras", result: "D", scoreline: "1-1" },
+      { label: "vs Vasco", result: "L", scoreline: "1-2" },
+      { label: "vs Atletico-MG", result: "W", scoreline: "2-0" },
+    ],
+    awayForm: [
+      { label: "vs Gremio", result: "D", scoreline: "0-0" },
+      { label: "vs Bahia", result: "W", scoreline: "2-1" },
+      { label: "vs Palmeiras", result: "W", scoreline: "1-0" },
+      { label: "vs Corinthians", result: "L", scoreline: "0-2" },
+      { label: "vs Fortaleza", result: "D", scoreline: "1-1" },
+    ],
+    headToHead: [
+      { date: "2025-10-05", competition: "Brasileirao", scoreline: "2-2", winner: "Empate" },
+      { date: "2025-06-22", competition: "Brasileirao", scoreline: "1-0", winner: "Internacional" },
+      { date: "2024-09-14", competition: "Brasileirao", scoreline: "3-1", winner: "Botafogo" },
+    ],
+    statSnapshot: [
+      { label: "Corners a favor", homeValue: 6.8, awayValue: 5.4, emphasis: "neutral" },
+      { label: "BTTS rate", homeValue: 0.56, awayValue: 0.58, emphasis: "neutral" },
+      { label: "Cartoes", homeValue: 2.7, awayValue: 2.8, emphasis: "lower-better" },
+      { label: "Gols sofridos", homeValue: 1.1, awayValue: 1.16, emphasis: "lower-better" },
+    ],
+    injuryNotes: [
+      { teamSide: "away", player: "Zagueiro canhoto", status: "fora", impact: "medium" },
+    ],
+    newsSignals: [
+      "Botafogo aumenta volume de cruzamentos quando encontra linhas baixas.",
+      "Inter cresce em jogos de transicao e bola parada longe de casa.",
+    ],
+  },
+  {
+    id: "fix-cam-bah",
+    competition: competitions["copa-do-brasil"],
+    kickoffAt: "2026-04-14T20:00:00-03:00",
+    roundLabel: "Oitavas - Ida",
+    venue: "Arena MRV",
+    headline: "Primeiro duelo mata-mata com volatilidade de cartoes",
+    headlineDeck:
+      "O contexto de ida mata-mata eleva o peso disciplinar e reduz a agressividade de scoreline.",
+    stakes: "Confronto eliminatorio com tendencia de mais cartoes do que gols.",
+    signalTag: "Alta em cartoes",
+    status: "scheduled",
+    homeTeam: { id: atletico.id, name: atletico.name, shortName: atletico.shortName },
+    awayTeam: { id: bahia.id, name: bahia.name, shortName: bahia.shortName },
+    homeProfile: atletico,
+    awayProfile: bahia,
+    homeForm: [
+      { label: "vs Botafogo", result: "L", scoreline: "0-2" },
+      { label: "vs Vitoria", result: "W", scoreline: "3-0" },
+      { label: "vs Bragantino", result: "D", scoreline: "2-2" },
+      { label: "vs Cruzeiro", result: "W", scoreline: "2-1" },
+      { label: "vs Inter", result: "D", scoreline: "1-1" },
+    ],
+    awayForm: [
+      { label: "vs Ceara", result: "W", scoreline: "2-0" },
+      { label: "vs Sport", result: "D", scoreline: "1-1" },
+      { label: "vs Flamengo", result: "L", scoreline: "1-2" },
+      { label: "vs Fortaleza", result: "W", scoreline: "1-0" },
+      { label: "vs Inter", result: "L", scoreline: "1-2" },
+    ],
+    headToHead: [
+      { date: "2025-08-09", competition: "Brasileirao", scoreline: "1-0", winner: "Atletico-MG" },
+      { date: "2025-03-30", competition: "Brasileirao", scoreline: "1-1", winner: "Empate" },
+      { date: "2024-11-20", competition: "Brasileirao", scoreline: "2-2", winner: "Empate" },
+    ],
+    statSnapshot: [
+      { label: "Cartoes a favor", homeValue: 2.5, awayValue: 2.9, emphasis: "lower-better" },
+      { label: "BTTS rate", homeValue: 0.61, awayValue: 0.54, emphasis: "neutral" },
+      { label: "xG medio", homeValue: 1.57, awayValue: 1.28, emphasis: "neutral" },
+      { label: "Escanteios", homeValue: 5.7, awayValue: 5.0, emphasis: "neutral" },
+    ],
+    injuryNotes: [
+      { teamSide: "home", player: "Volante de cobertura", status: "fora", impact: "high" },
+      { teamSide: "away", player: "Centroavante reserva", status: "duvida", impact: "low" },
+    ],
+    newsSignals: [
+      "Primeiro jogo de mata-mata historicamente puxa a media de cartoes para cima.",
+      "Sem volante de cobertura, o Atletico tende a cometer faltas taticas na perda da bola.",
+    ],
+  },
+];
+
+export const mockProviderScores: ProviderScore[] = [
+  {
+    provider: "claude",
+    providerName: "Claude 3.7 Sonnet",
+    accuracy: 0.82,
+    calibration: 0.79,
+    trend: "up",
+    resolvedSamples: 1240,
+    greens: 1016,
+    reds: 224,
+  },
+  {
+    provider: "gpt",
+    providerName: "GPT-5",
+    accuracy: 0.79,
+    calibration: 0.77,
+    trend: "steady",
+    resolvedSamples: 1184,
+    greens: 935,
+    reds: 249,
+  },
+  {
+    provider: "gemini",
+    providerName: "Gemini 2.5 Pro",
+    accuracy: 0.76,
+    calibration: 0.74,
+    trend: "up",
+    resolvedSamples: 961,
+    greens: 732,
+    reds: 229,
+  },
+  {
+    provider: "grok",
+    providerName: "Grok 3",
+    accuracy: 0.72,
+    calibration: 0.69,
+    trend: "down",
+    resolvedSamples: 844,
+    greens: 607,
+    reds: 237,
+  },
+];
+
+export const mockHistory: HistoryEntry[] = [
+  {
+    analysisId: "analysis-fla-pal-resolved",
+    fixtureId: "fix-fla-pal",
+    summary: "Flamengo vs Palmeiras",
+    topPick: "Menos de 3.5 gols",
+    verdict: "green",
+    actualScore: "1-0",
+    settledAt: "2026-04-03T22:50:00-03:00",
+    provider: "claude",
+  },
+  {
+    analysisId: "analysis-bot-int-resolved",
+    fixtureId: "fix-bot-int",
+    summary: "Botafogo vs Internacional",
+    topPick: "Mais de 9.5 escanteios",
+    verdict: "green",
+    actualScore: "2-1",
+    settledAt: "2026-04-01T21:37:00-03:00",
+    provider: "gpt",
+  },
+  {
+    analysisId: "analysis-cam-bah-resolved",
+    fixtureId: "fix-cam-bah",
+    summary: "Atletico-MG vs Bahia",
+    topPick: "Bahia ou empate",
+    verdict: "red",
+    actualScore: "2-0",
+    settledAt: "2026-03-28T23:12:00-03:00",
+    provider: "grok",
+  },
+];
+
+export const demoQuota: UserQuota = {
+  managedCredits: 120,
+  dailyCap: 20,
+  usedToday: 6,
+  byokEnabled: true,
+};
+
+export const demoPreferences: UserPreferences = {
+  defaultCompetition: "brasileirao",
+  selectedProviders: ["claude", "gpt", "gemini"],
+  notificationsEnabled: true,
+  analysisMode: "hybrid",
+};
+
+export function listMockFixtures(
+  competition?: CompetitionSlug,
+): FixtureSummary[] {
+  return mockFixtures
+    .filter((fixture) =>
+      competition ? fixture.competition.slug === competition : true,
+    )
+    .map((fixture) => ({
+      id: fixture.id,
+      competition: fixture.competition,
+      kickoffAt: fixture.kickoffAt,
+      roundLabel: fixture.roundLabel,
+      venue: fixture.venue,
+      headline: fixture.headline,
+      signalTag: fixture.signalTag,
+      status: fixture.status,
+      homeTeam: fixture.homeTeam,
+      awayTeam: fixture.awayTeam,
+    }));
+}
+
+export function getMockFixtureDetails(fixtureId: string): FixtureDetails | null {
+  return mockFixtures.find((fixture) => fixture.id === fixtureId) ?? null;
+}
